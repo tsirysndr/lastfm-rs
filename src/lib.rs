@@ -1,0 +1,36 @@
+use std::convert::TryInto;
+use std::time::Duration;
+use surf::{Client, Config, Url};
+
+pub mod album;
+pub mod artist;
+pub mod library;
+pub mod search;
+pub mod tag;
+
+pub struct Lastfm {
+  pub album: album::AlbumService,
+  pub artist: artist::ArtistService,
+  pub library: library::LibraryService,
+  pub search: search::SearchService,
+  pub tag: tag::TagService,
+}
+
+const BASE_URL: &str = "http://ws.audioscrobbler.com/2.0/";
+
+impl Lastfm {
+  pub fn new() -> Self {
+    let client: Client = Config::new()
+      .set_base_url(Url::parse(BASE_URL).unwrap())
+      .set_timeout(Some(Duration::from_secs(5)))
+      .try_into()
+      .unwrap();
+    Self {
+      album: album::AlbumService::new(&client),
+      artist: artist::ArtistService::new(&client),
+      library: library::LibraryService::new(&client),
+      search: search::SearchService::new(&client),
+      tag: tag::TagService::new(&client),
+    }
+  }
+}
