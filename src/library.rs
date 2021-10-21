@@ -10,4 +10,6 @@ impl LibraryService {
       client: client.clone(),
     }
   }
+
+  pub fn get_artists(&self) {}
 }

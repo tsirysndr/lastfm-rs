@@ -1,10 +1,10 @@
 use surf::Client;
 
-pub struct ArtistService {
+pub struct TrackService {
   client: Client,
 }
 
-impl ArtistService {
+impl TrackService {
   pub fn new(client: &Client) -> Self {
     Self {
       client: client.clone(),
@@ -21,13 +21,17 @@ impl ArtistService {
 
   pub fn get_tags(&self) {}
 
-  pub fn get_top_albums(&self) {}
-
   pub fn get_top_tags(&self) {}
 
-  pub fn get_top_tracks(&self) {}
+  pub fn love(&self) {}
 
   pub fn remove_tag(&self) {}
 
+  pub fn scrobble(&self) {}
+
   pub fn search(&self) {}
+
+  pub fn unlove(&self) {}
+
+  pub fn update_now_playing(&self) {}
 }

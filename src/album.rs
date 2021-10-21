@@ -10,4 +10,16 @@ impl AlbumService {
       client: client.clone(),
     }
   }
+
+  pub fn add_tags(&self) {}
+
+  pub fn get_info(&self) {}
+
+  pub fn get_tags(&self) {}
+
+  pub fn get_top_tags(&self) {}
+
+  pub fn remove_tag(&self) {}
+
+  pub fn search(&self) {}
 }

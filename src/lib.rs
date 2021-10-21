@@ -7,6 +7,7 @@ pub mod artist;
 pub mod library;
 pub mod search;
 pub mod tag;
+pub mod track;
 
 pub struct Lastfm {
   pub album: album::AlbumService,
@@ -14,6 +15,7 @@ pub struct Lastfm {
   pub library: library::LibraryService,
   pub search: search::SearchService,
   pub tag: tag::TagService,
+  pub track: track::TrackService,
 }
 
 const BASE_URL: &str = "http://ws.audioscrobbler.com/2.0/";
@@ -31,6 +33,7 @@ impl Lastfm {
       library: library::LibraryService::new(&client),
       search: search::SearchService::new(&client),
       tag: tag::TagService::new(&client),
+      track: track::TrackService::new(&client),
     }
   }
 }
