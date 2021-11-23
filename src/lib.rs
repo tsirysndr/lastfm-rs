@@ -21,19 +21,19 @@ pub struct Lastfm {
 const BASE_URL: &str = "http://ws.audioscrobbler.com/2.0/";
 
 impl Lastfm {
-  pub fn new() -> Self {
+  pub fn new(api_key: &str) -> Self {
     let client: Client = Config::new()
       .set_base_url(Url::parse(BASE_URL).unwrap())
       .set_timeout(Some(Duration::from_secs(5)))
       .try_into()
       .unwrap();
     Self {
-      album: album::AlbumService::new(&client),
-      artist: artist::ArtistService::new(&client),
-      library: library::LibraryService::new(&client),
-      search: search::SearchService::new(&client),
-      tag: tag::TagService::new(&client),
-      track: track::TrackService::new(&client),
+      album: album::AlbumService::new(&client, api_key),
+      artist: artist::ArtistService::new(&client, api_key),
+      library: library::LibraryService::new(&client, api_key),
+      search: search::SearchService::new(&client, api_key),
+      tag: tag::TagService::new(&client, api_key),
+      track: track::TrackService::new(&client, api_key),
     }
   }
 }

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2018"
 
 [[example]]
-name = "lastfm-rs"
+name = "simple"
 path = "examples/simple.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -14,4 +14,4 @@ surf = "2.3.1"
 serde = "1.0.130"
 serde_json = "1.0.68"
 serde-xml-rs = "0.5.1"
-tokio = "1.12.0"
+tokio = { version = "1.12.0", features = ["full"] }
