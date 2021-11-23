@@ -1,6 +1,7 @@
 use crate::tag::Tags;
+use crate::track::Attr;
 use crate::track::Tracks;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use surf::Client;
 
 #[derive(Debug, Deserialize)]
@@ -12,14 +13,15 @@ pub struct AlbumResponse {
 pub struct Album {
   pub artist: String,
   pub mbid: String,
-  pub tags: Tags,
-  pub playcount: String,
+  pub tags: Option<Tags>,
+  pub playcount: Option<String>,
   pub image: Vec<Image>,
-  pub tracks: Tracks,
+  pub tracks: Option<Tracks>,
   pub url: String,
   pub name: String,
-  pub listeners: String,
-  pub wiki: Wiki,
+  pub listeners: Option<String>,
+  pub wiki: Option<Wiki>,
+  pub streamable: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -34,6 +36,47 @@ pub struct Wiki {
   pub published: String,
   pub summary: String,
   pub content: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SearchResponse {
+  pub results: Results,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SearchResults {
+  pub results: Results,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Results {
+  #[serde(rename = "opensearch:Query")]
+  pub opensearch_query: OpensearchQuery,
+  #[serde(rename = "opensearch:totalResults")]
+  pub opensearch_total_results: String,
+  #[serde(rename = "opensearch:startIndex")]
+  pub openserch_start_index: String,
+  #[serde(rename = "opensearch:itemsPerPage")]
+  pub opensearch_items_per_page: String,
+  pub albummatches: Albummatches,
+  #[serde(rename = "@attr")]
+  pub attr: Attr,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct OpensearchQuery {
+  #[serde(rename = "#text")]
+  pub text: String,
+  pub role: String,
+  #[serde(rename = "searchTerms")]
+  pub search_terms: String,
+  #[serde(rename = "startPage")]
+  pub start_page: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Albummatches {
+  pub album: Vec<Album>,
 }
 
 pub struct AlbumService {
@@ -77,7 +120,15 @@ impl AlbumService {
     Ok(())
   }
 
-  pub async fn search(&self) -> Result<(), surf::Error> {
-    Ok(())
+  pub async fn search(&self, title: &str) -> Result<SearchResults, surf::Error> {
+    let res = self
+      .client
+      .get(format!(
+        "?method=album.search&album={}&api_key={}&format=json",
+        title, self.api_key
+      ))
+      .recv_json::<SearchResults>()
+      .await?;
+    Ok(res)
   }
 }

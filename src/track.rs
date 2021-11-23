@@ -27,7 +27,8 @@ pub struct Streamable {
 
 #[derive(Debug, Deserialize)]
 pub struct Attr {
-  pub rank: u32,
+  pub rank: Option<u32>,
+  pub r#for: Option<String>,
 }
 
 pub struct TrackService {
