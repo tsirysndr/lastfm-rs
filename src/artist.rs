@@ -4,10 +4,15 @@ use serde::Deserialize;
 use surf::Client;
 
 #[derive(Debug, Deserialize)]
+pub struct ArtistResponse {
+  pub artist: Artist,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Artist {
   pub url: String,
   pub name: String,
-  pub mbid: String,
+  pub mbid: Option<String>,
   pub image: Option<Vec<Image>>,
   pub streamable: Option<String>,
   pub ontour: Option<String>,
@@ -38,7 +43,7 @@ pub struct Bio {
 
 #[derive(Debug, Deserialize)]
 pub struct Links {
-  pub link: Vec<Link>,
+  pub link: Link,
 }
 
 #[derive(Debug, Deserialize)]
@@ -70,8 +75,16 @@ impl ArtistService {
     Ok(())
   }
 
-  pub async fn get_info(&self) -> Result<(), surf::Error> {
-    Ok(())
+  pub async fn get_info(&self, name: &str) -> Result<ArtistResponse, surf::Error> {
+    let res = self
+      .client
+      .get(format!(
+        "?method=artist.getinfo&artist={}&api_key={}&format=json",
+        name, self.api_key
+      ))
+      .recv_json::<ArtistResponse>()
+      .await?;
+    Ok(res)
   }
 
   pub async fn get_similar(&self) -> Result<(), surf::Error> {
