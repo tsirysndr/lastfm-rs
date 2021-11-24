@@ -1,5 +1,7 @@
 use crate::album::Image;
+use crate::album::OpensearchQuery;
 use crate::tag::Tags;
+use crate::track::Attr;
 use serde::Deserialize;
 use surf::Client;
 
@@ -52,6 +54,31 @@ pub struct Link {
   pub text: String,
   pub rel: String,
   pub href: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SearchResults {
+  pub results: Results,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Results {
+  #[serde(rename = "opensearch:Query")]
+  pub opensearch_query: OpensearchQuery,
+  #[serde(rename = "opensearch:totalResults")]
+  pub opensearch_total_results: String,
+  #[serde(rename = "opensearch:startIndex")]
+  pub openserch_start_index: String,
+  #[serde(rename = "opensearch:itemsPerPage")]
+  pub opensearch_items_per_page: String,
+  pub artistmatches: Artistmatches,
+  #[serde(rename = "@attr")]
+  pub attr: Attr,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Artistmatches {
+  pub artist: Vec<Artist>,
 }
 
 pub struct ArtistService {
@@ -111,7 +138,15 @@ impl ArtistService {
     Ok(())
   }
 
-  pub async fn search(&self) -> Result<(), surf::Error> {
-    Ok(())
+  pub async fn search(&self, name: &str) -> Result<SearchResults, surf::Error> {
+    let res = self
+      .client
+      .get(format!(
+        "?method=artist.search&artist={}&api_key={}&format=json",
+        name, self.api_key
+      ))
+      .recv_json::<SearchResults>()
+      .await?;
+    Ok(res)
   }
 }
