@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to lastfm-rs 👋</h1>
+<h1 align="left">lastfm-rs 👋</h1>
 <p>
   <a href="#" target="_blank">
     <img alt="License: BSD" src="https://img.shields.io/badge/License-BSD-green.svg" />
