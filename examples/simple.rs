@@ -7,9 +7,15 @@ async fn main() {
   let album_results = client.album.search("Meteora").await;
   let artist = client.artist.get_info("Linkin Park").await;
   let artist_results = client.artist.search("Linkin Park").await;
+  let track = client.track.get_info("Linkin Park", "papercut").await;
+  let similar_artists = client.artist.get_similar("Linkin Park").await;
+  let top_albums = client.artist.get_top_albums("Linkin Park").await;
 
   println!("{:#?}", album.unwrap());
   println!("{:#?}", album_results.unwrap());
   println!("{:#?}", artist.unwrap());
   println!("{:#?}", artist_results.unwrap());
+  println!("{:#?}", track.unwrap());
+  println!("{:#?}", similar_artists.unwrap());
+  println!("{:#?}", top_albums.unwrap());
 }

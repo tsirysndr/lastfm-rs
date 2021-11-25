@@ -1,3 +1,4 @@
+use crate::artist::Artist;
 use crate::tag::Tags;
 use crate::track::Attr;
 use crate::track::Tracks;
@@ -6,17 +7,17 @@ use surf::Client;
 
 #[derive(Debug, Deserialize)]
 pub struct AlbumResponse {
-  pub album: Album,
+  pub album: Album<String, String>,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Album {
-  pub artist: String,
-  pub mbid: String,
+pub struct Album<T, U> {
+  pub artist: U,
+  pub mbid: Option<String>,
   pub tags: Option<Tags>,
-  pub playcount: Option<String>,
+  pub playcount: Option<T>,
   pub image: Vec<Image>,
-  pub tracks: Option<Tracks>,
+  pub tracks: Option<Tracks<u32>>,
   pub url: String,
   pub name: String,
   pub listeners: Option<String>,
@@ -76,7 +77,12 @@ pub struct OpensearchQuery {
 
 #[derive(Debug, Deserialize)]
 pub struct Albummatches {
-  pub album: Vec<Album>,
+  pub album: Vec<Album<String, String>>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Albums<T> {
+  pub album: Vec<Album<T, Artist>>,
 }
 
 pub struct AlbumService {

@@ -1,3 +1,4 @@
+use crate::album::Albums;
 use crate::album::Image;
 use crate::album::OpensearchQuery;
 use crate::tag::Tags;
@@ -8,6 +9,11 @@ use surf::Client;
 #[derive(Debug, Deserialize)]
 pub struct ArtistResponse {
   pub artist: Artist,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SimilarArtists {
+  pub similarartists: Similar,
 }
 
 #[derive(Debug, Deserialize)]
@@ -81,6 +87,11 @@ pub struct Artistmatches {
   pub artist: Vec<Artist>,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct TopAlbums {
+  pub topalbums: Albums<u32>,
+}
+
 pub struct ArtistService {
   client: Client,
   api_key: String,
@@ -114,16 +125,32 @@ impl ArtistService {
     Ok(res)
   }
 
-  pub async fn get_similar(&self) -> Result<(), surf::Error> {
-    Ok(())
+  pub async fn get_similar(&self, name: &str) -> Result<SimilarArtists, surf::Error> {
+    let res = self
+      .client
+      .get(format!(
+        "?method=artist.getsimilar&artist={}&api_key={}&format=json",
+        name, self.api_key
+      ))
+      .recv_json::<SimilarArtists>()
+      .await?;
+    Ok(res)
   }
 
   pub async fn get_tags(&self) -> Result<(), surf::Error> {
     Ok(())
   }
 
-  pub async fn get_top_albums(&self) -> Result<(), surf::Error> {
-    Ok(())
+  pub async fn get_top_albums(&self, artist: &str) -> Result<TopAlbums, surf::Error> {
+    let res = self
+      .client
+      .get(format!(
+        "?method=artist.gettopalbums&artist={}&api_key={}&format=json",
+        artist, self.api_key
+      ))
+      .recv_json::<TopAlbums>()
+      .await?;
+    Ok(res)
   }
 
   pub async fn get_top_tags(&self) -> Result<(), surf::Error> {

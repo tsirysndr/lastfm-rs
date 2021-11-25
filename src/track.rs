@@ -3,19 +3,24 @@ use serde::Deserialize;
 use surf::Client;
 
 #[derive(Debug, Deserialize)]
-pub struct Track {
+pub struct TrackResponse {
+  pub track: Track<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Track<T> {
   pub streamable: Streamable,
-  pub duration: u32,
+  pub duration: T,
   pub url: String,
   pub name: String,
   #[serde(rename = "@attr")]
-  pub attr: Attr,
+  pub attr: Option<Attr>,
   pub artist: Artist,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Tracks {
-  pub track: Vec<Track>,
+pub struct Tracks<T> {
+  pub track: Vec<Track<T>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -52,8 +57,16 @@ impl TrackService {
     Ok(())
   }
 
-  pub async fn get_info(&self) -> Result<(), surf::Error> {
-    Ok(())
+  pub async fn get_info(&self, artist: &str, title: &str) -> Result<TrackResponse, surf::Error> {
+    let res = self
+      .client
+      .get(format!(
+        "?method=track.getinfo&artist={}&track={}&api_key={}&format=json",
+        artist, title, self.api_key
+      ))
+      .recv_json::<TrackResponse>()
+      .await?;
+    Ok(res)
   }
 
   pub async fn get_similar(&self) -> Result<(), surf::Error> {
