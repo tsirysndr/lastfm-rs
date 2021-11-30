@@ -10,6 +10,7 @@ async fn main() {
   let track = client.track.get_info("Linkin Park", "papercut").await;
   let similar_artists = client.artist.get_similar("Linkin Park").await;
   let top_albums = client.artist.get_top_albums("Linkin Park").await;
+  let top_tracks = client.artist.get_top_tracks("Linkin Park").await;
 
   println!("{:#?}", album.unwrap());
   println!("{:#?}", album_results.unwrap());
@@ -18,4 +19,5 @@ async fn main() {
   println!("{:#?}", track.unwrap());
   println!("{:#?}", similar_artists.unwrap());
   println!("{:#?}", top_albums.unwrap());
+  println!("{:#?}", top_tracks.unwrap());
 }

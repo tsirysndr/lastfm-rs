@@ -3,6 +3,7 @@ use crate::album::Image;
 use crate::album::OpensearchQuery;
 use crate::tag::Tags;
 use crate::track::Attr;
+use crate::track::Tracks;
 use serde::Deserialize;
 use surf::Client;
 
@@ -79,7 +80,7 @@ pub struct Results {
   pub opensearch_items_per_page: String,
   pub artistmatches: Artistmatches,
   #[serde(rename = "@attr")]
-  pub attr: Attr,
+  pub attr: Attr<u32>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -90,6 +91,11 @@ pub struct Artistmatches {
 #[derive(Debug, Deserialize)]
 pub struct TopAlbums {
   pub topalbums: Albums<u32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TopTracks {
+  pub toptracks: Tracks<u32, String, String>,
 }
 
 pub struct ArtistService {
@@ -157,8 +163,16 @@ impl ArtistService {
     Ok(())
   }
 
-  pub async fn get_top_tracks(&self) -> Result<(), surf::Error> {
-    Ok(())
+  pub async fn get_top_tracks(&self, artist: &str) -> Result<TopTracks, surf::Error> {
+    let res = self
+      .client
+      .get(format!(
+        "?method=artist.gettoptracks&artist={}&api_key={}&format=json",
+        artist, self.api_key
+      ))
+      .recv_json::<TopTracks>()
+      .await?;
+    Ok(res)
   }
 
   pub async fn remove_tag(&self) -> Result<(), surf::Error> {

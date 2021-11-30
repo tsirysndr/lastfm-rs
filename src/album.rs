@@ -1,6 +1,7 @@
 use crate::artist::Artist;
 use crate::tag::Tags;
 use crate::track::Attr;
+use crate::track::Streamable;
 use crate::track::Tracks;
 use serde::{Deserialize, Serialize};
 use surf::Client;
@@ -17,7 +18,7 @@ pub struct Album<T, U> {
   pub tags: Option<Tags>,
   pub playcount: Option<T>,
   pub image: Vec<Image>,
-  pub tracks: Option<Tracks<u32>>,
+  pub tracks: Option<Tracks<u32, Streamable, u32>>,
   pub url: String,
   pub name: String,
   pub listeners: Option<String>,
@@ -61,7 +62,7 @@ pub struct Results {
   pub opensearch_items_per_page: String,
   pub albummatches: Albummatches,
   #[serde(rename = "@attr")]
-  pub attr: Attr,
+  pub attr: Attr<u32>,
 }
 
 #[derive(Debug, Deserialize)]

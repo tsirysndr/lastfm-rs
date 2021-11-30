@@ -4,23 +4,23 @@ use surf::Client;
 
 #[derive(Debug, Deserialize)]
 pub struct TrackResponse {
-  pub track: Track<String>,
+  pub track: Track<String, Streamable, u32>,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Track<T> {
-  pub streamable: Streamable,
-  pub duration: T,
+pub struct Track<T, U, V> {
+  pub streamable: U,
+  pub duration: Option<T>,
   pub url: String,
   pub name: String,
   #[serde(rename = "@attr")]
-  pub attr: Option<Attr>,
+  pub attr: Option<Attr<V>>,
   pub artist: Artist,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Tracks<T> {
-  pub track: Vec<Track<T>>,
+pub struct Tracks<T, U, V> {
+  pub track: Vec<Track<T, U, V>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -31,8 +31,8 @@ pub struct Streamable {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Attr {
-  pub rank: Option<u32>,
+pub struct Attr<T> {
+  pub rank: Option<T>,
   pub r#for: Option<String>,
 }
 
